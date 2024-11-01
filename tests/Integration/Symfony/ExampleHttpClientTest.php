@@ -6,13 +6,14 @@ namespace VCR\Tests\Integration\Symfony;
 
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
+use VCR\VCR;
 
 /**
  * Tests example request.
  */
 class ExampleHttpClientTest extends TestCase
 {
-    private const TEST_GET_URL = 'https://api.chew.pro/trbmb';
+    private const TEST_GET_URL = 'https://jsonplaceholder.typicode.com/todos/1';
     private const TEST_POST_URL = 'https://httpbin.org/post';
     private const TEST_POST_BODY = '{"foo":"bar"}';
 
@@ -27,13 +28,13 @@ class ExampleHttpClientTest extends TestCase
     protected function setUp(): void
     {
         vfsStream::setup('testDir');
-        \VCR\VCR::configure()->setCassettePath(vfsStream::url('testDir'));
+        VCR::configure()->setCassettePath(vfsStream::url('testDir'));
     }
 
     public function testRequestGET(): void
     {
-        \VCR\VCR::turnOn();
-        \VCR\VCR::insertCassette('test-cassette.yml');
+        VCR::turnOn();
+        VCR::insertCassette('test-cassette.yml');
         $originalRequest = $this->requestGET();
         $this->assertValidGETResponse($originalRequest);
         $interceptedRequest = $this->requestGET();
@@ -41,13 +42,13 @@ class ExampleHttpClientTest extends TestCase
         self::assertEquals($originalRequest, $interceptedRequest);
         $repeatInterceptedRequest = $this->requestGET();
         self::assertEquals($interceptedRequest, $repeatInterceptedRequest);
-        \VCR\VCR::turnOff();
+        VCR::turnOff();
     }
 
     public function testRequestPOST(): void
     {
-        \VCR\VCR::turnOn();
-        \VCR\VCR::insertCassette('test-cassette.yml');
+        VCR::turnOn();
+        VCR::insertCassette('test-cassette.yml');
         $originalRequest = $this->requestPOST();
         $this->assertValidPOSTResponse($originalRequest);
         $interceptedRequest = $this->requestPOST();
@@ -55,7 +56,7 @@ class ExampleHttpClientTest extends TestCase
         self::assertEquals($originalRequest, $interceptedRequest);
         $repeatInterceptedRequest = $this->requestPOST();
         self::assertEquals($interceptedRequest, $repeatInterceptedRequest);
-        \VCR\VCR::turnOff();
+        VCR::turnOff();
     }
 
     /**
@@ -105,10 +106,10 @@ class ExampleHttpClientTest extends TestCase
      */
     protected function requestPOSTIntercepted()
     {
-        \VCR\VCR::turnOn();
-        \VCR\VCR::insertCassette('test-cassette.yml');
+        VCR::turnOn();
+        VCR::insertCassette('test-cassette.yml');
         $info = $this->requestPOST();
-        \VCR\VCR::turnOff();
+        VCR::turnOff();
 
         return $info;
     }

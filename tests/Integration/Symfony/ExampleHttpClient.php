@@ -16,7 +16,7 @@ class ExampleHttpClient
 
     public function __construct(?HttpClientInterface $client = null)
     {
-        $this->client = $client ?? HttpClient::create(['http_version' => '1.1']);
+        $this->client = $client ?? HttpClient::create();
     }
 
     /**

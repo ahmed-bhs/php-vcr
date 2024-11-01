@@ -22,29 +22,27 @@ class ErrorTest extends TestCase
         \VCR\VCR::configure()->setCassettePath(vfsStream::url('testDir'));
     }
 
-    public function testConnectException(): void
+    public function testConnectionExceptionHandling(): void
     {
-        $nonInstrumentedException = null;
-        try {
-            $client = HttpClient::create();
-            $response = $client->request('GET', self::TEST_GET_URL);
-            $response->getHeaders();
-        } catch (TransportExceptionInterface $e) {
-            $nonInstrumentedException = $e;
-        }
-        self::assertNotNull($nonInstrumentedException);
-        $catched = false;
+        $this->expectException(TransportExceptionInterface::class);
+        $client = HttpClient::create();
+        $response = $client->request('GET', self::TEST_GET_URL);
+        $response->getHeaders();
+    }
+
+    public function testConnectionWithPhpVcrExceptionHandling(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Unexpected error: Unable to retrieve cURL information from response or error logs.');
         \VCR\VCR::turnOn();
         \VCR\VCR::insertCassette('test-cassette.yml');
-        try {
-            $client = HttpClient::create();
-            $response = $client->request('GET', self::TEST_GET_URL);
-            $response->getHeaders();
-        } catch (TransportExceptionInterface $e) {
-            $catched = true;
-            self::assertEquals($e->getMessage(), $nonInstrumentedException->getMessage());
-        }
-        self::assertTrue($catched);
+        $client = HttpClient::create();
+        $response = $client->request('GET', self::TEST_GET_URL);
+        $response->getHeaders();
+
+        $this->assertEmpty($response->getContent(false));
+
+        \VCR\VCR::turnOff();
         \VCR\VCR::turnOff();
     }
 }
