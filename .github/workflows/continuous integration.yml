@@ -16,7 +16,7 @@ jobs:
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.0"
+          php-version: "8.1"
           extensions: "curl, soap"
           tools: "composer:v2"
 
@@ -36,7 +36,7 @@ jobs:
         run: "composer run-script phpstan"
 
   editorconfig-checker:
-    name: EditorConfig Checker
+    name: "EditorConfig Checker"
     runs-on: "ubuntu-latest"
 
     steps:
@@ -60,7 +60,7 @@ jobs:
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.0"
+          php-version: "8.1"
           extensions: "curl, soap"
           tools: "composer:v2"
 
@@ -87,10 +87,10 @@ jobs:
       fail-fast: false
       matrix:
         php:
-          - "8.0"
           - "8.1"
           - "8.2"
           - "8.3"
+          - "8.4"
         dependencies:
           - "lowest"
           - "highest"
